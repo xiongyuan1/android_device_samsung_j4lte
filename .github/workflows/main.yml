@@ -1,0 +1,45 @@
+name: Build TWRP j4lte
+
+on:
+  workflow_dispatch: # allows manual triggering
+  push:
+    branches: [ "android-12.1" ]  # optional, auto-build on push
+  pull_request:
+    branches: [ "android-12.1" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout builder repo
+      uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y git repo python3 unzip openjdk-11-jdk bc bison flex build-essential curl wget
+
+    - name: Initialize Android repo
+      run: |
+        repo init -u https://github.com/TeamWin/manifest.git -b android-12.1
+        repo sync -c -j4 --no-tags --no-clone-bundle
+
+    - name: Clone device tree
+      run: |
+        git clone --branch android-12.1 https://github.com/xiongyuan1/android_device_samsung_j4lte.git device/samsung/j4lte
+
+    - name: Setup build environment
+      run: |
+        source build/envsetup.sh
+        lunch omni_j4lte-eng
+
+    - name: Build TWRP recovery
+      run: mka recoveryimage
+
+    - name: Upload TWRP artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: twrp-j4lte
+        path: out/target/product/j4lte/recovery.img
