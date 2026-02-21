@@ -39,7 +39,7 @@ jobs:
       run: mka recoveryimage
 
     - name: Upload TWRP artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: twrp-j4lte
         path: out/target/product/j4lte/recovery.img
