@@ -23,9 +23,7 @@ jobs:
 
     - name: Initialize Android repo
       run: |
-        repo init -u https://github.com/TeamWin/manifest.git -b android-12.1
-        repo sync -c -j4 --no-tags --no-clone-bundle
-
+        
     - name: Clone device tree
       run: |
         git clone --branch android-12.1 https://github.com/xiongyuan1/android_device_samsung_j4lte.git device/samsung/j4lte
